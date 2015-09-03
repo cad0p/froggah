@@ -38,7 +38,7 @@ else:
     print("0 means no river; 1 means that the river is large as the cars; 2 means the river is twice the cars")
     print("And so on...")
     for street in range(streets):
-        rivers.append(int(input("Choose how large do you want the river", street, "to be: ")))
+        rivers.append(int(input("Choose how large do you want the river " + str(street + 1) + " to be: ")))
     print("Well done!")
     
 print("Now see it in action!")
@@ -68,7 +68,7 @@ for k in range(rows):
     cars.append(randint(1, 9))
 distance = []
 for r in range(rows):
-    distance.append(screenx / cars [r])
+    distance.append((screenx + carwidth) // cars [r])
 carinrowbw=[]
 carinrowfw=[]
 
@@ -79,8 +79,6 @@ for k in range(9):
     carinrowfw.append(random.choice(typecarfw))
 
 
-
-startposition = [1/3, 1/2, 2/3]
     
 
 
@@ -91,7 +89,7 @@ while playing:
     for e in pygame.event.get():  # Handle events: mouse, keyb etc.
         if e.type == pygame.QUIT: playing = False
     
-    for mov in range(screenx):
+    for mov in range(screenx + carwidth):
         
         screen.fill((255, 255, 255))
         for r in range(rows):
@@ -108,13 +106,22 @@ while playing:
             if row%2 == 0:
                 x = -mov
                 for i in range(cars[row]):
-                    screen.blit(car, (x % screenx, carrow[row]), area=(carinrowbw[i], 0, carwidth, carwidth))
-                    x += distance[row]
+                    if -carwidth <= x < 0:
+                        screen.blit(car, (x, carrow[row]), area=(carinrowbw[i], 0, carwidth, carwidth))
+                        x += distance[row]
+                    else:
+                        screen.blit(car, (x % (screenx + carwidth), carrow[row]), area=(carinrowbw[i], 0, carwidth, carwidth))
+                        x += distance[row]
             elif row%2 == 1:
                 x = mov
                 for i in range(cars[row]):
-                    screen.blit(car, (x % screenx, carrow[row]), area=(carinrowfw[i], 0, carwidth, carwidth))
-                    x += distance[row]
+                    if screenx <= x < (screenx + carwidth):
+                        screen.blit(car, (x - (screenx + carwidth), carrow[row]), area=(carinrowfw[i], 0, carwidth, carwidth))
+                        x += distance[row]
+                    else:
+                        
+                        screen.blit(car, (x % (screenx + carwidth), carrow[row]), area=(carinrowfw[i], 0, carwidth, carwidth))
+                        x += distance[row]
         
  
     
@@ -123,3 +130,4 @@ while playing:
 
    
 pygame.quit()                     
+quit()
